@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# change wallpaper and generate colors
+wal -i $1
+
+# Color change function 
+changeCol(){
+	for item in $1/*
+	do
+		convert $item -alpha extract -background `echo $(cat ~/.cache/wal/colors | head -5 | tail -1)` -alpha shape $item
+	done
+}
+
+# Change battery color
+changeCol ~/.config/qtile/Assets/Battery/
+
+# Change volume color
+changeCol ~/.config/qtile/Assets/Volume/
+
+# reload qtile
+qtile cmd-obj -o cmd -f reload_config

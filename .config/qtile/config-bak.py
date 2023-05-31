@@ -1,43 +1,39 @@
-    
-#       █████████     ███████    ███████████ █████ █████ ███████████ █████ █████       ██████████
-#      ███░░░░░███  ███░░░░░███ ░█░░░░░░███ ░░███ ░░███ ░█░░░███░░░█░░███ ░░███       ░░███░░░░░█
-#     ███     ░░░  ███     ░░███░     ███░   ░░███ ███  ░   ░███  ░  ░███  ░███        ░███  █ ░ 
-#    ░███         ░███      ░███     ███      ░░█████       ░███     ░███  ░███        ░██████   
-#    ░███         ░███      ░███    ███        ░░███        ░███     ░███  ░███        ░███░░█   
-#    ░░███     ███░░███     ███   ████     █    ░███        ░███     ░███  ░███      █ ░███ ░   █
-#     ░░█████████  ░░░███████░   ███████████    █████       █████    █████ ███████████ ██████████
-#      ░░░░░░░░░     ░░░░░░░    ░░░░░░░░░░░    ░░░░░       ░░░░░    ░░░░░ ░░░░░░░░░░░ ░░░░░░░░░░ 
-#
-#                                                                                    - DARKKAL44
-  
 
+#  ██████╗ ████████╗██╗   ██╗██╗     ███████╗
+# ██╔═══██╗╚══██╔══╝╚██╗ ██╔╝██║     ██╔════╝
+# ██║   ██║   ██║    ╚████╔╝ ██║     █████╗  
+# ██║▄▄ ██║   ██║     ╚██╔╝  ██║     ██╔══╝  
+# ╚██████╔╝   ██║      ██║   ███████╗███████╗
+#  ╚══▀▀═╝    ╚═╝      ╚═╝   ╚══════╝╚══════╝
+                                           
 
 from libqtile import bar, layout, widget, hook, qtile
-from libqtile.config import Click, Drag, Group, Key, Match, hook, Screen, KeyChord
+from libqtile.config import Click, Drag, Group, Key, Match, hook, Screen, ScratchPad, DropDown
 from libqtile.lazy import lazy
-from libqtile.utils import guess_terminal
-from libqtile.dgroups import simple_key_binder
-from time import sleep
 
 mod = "mod4"
-terminal = "alacritty"
 alt = "mod1"
+terminal = "alacritty"
+browser = "vivaldi-stable --force-dark-mode"
+fileman = "pcmanfm"
 
-# █▄▀ █▀▀ █▄█ █▄▄ █ █▄░█ █▀▄ █▀
-# █░█ ██▄ ░█░ █▄█ █ █░▀█ █▄▀ ▄█
 
 
+# ██╗  ██╗███████╗██╗   ██╗██████╗ ██╗███╗   ██╗██████╗ ███████╗
+# ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔══██╗██║████╗  ██║██╔══██╗██╔════╝
+# █████╔╝ █████╗   ╚████╔╝ ██████╔╝██║██╔██╗ ██║██║  ██║███████╗
+# ██╔═██╗ ██╔══╝    ╚██╔╝  ██╔══██╗██║██║╚██╗██║██║  ██║╚════██║
+# ██║  ██╗███████╗   ██║   ██████╔╝██║██║ ╚████║██████╔╝███████║
+# ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═════╝ ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝
 
 
 keys = [
-
 #  D E F A U L T
-
    
     # essentials
-    Key(["control"], "Grave", lazy.spawn(terminal), desc="Launch terminal"),
+    Key(["control"], "Grave", lazy.group['Scratchpad'].dropdown_toggle('term'), desc="Launch terminal"),
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-    Key([mod], "q", lazy.window.kill(), desc="Kill active window"),
+    Key(["control"], "q", lazy.window.kill(), desc="Kill active window"),
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle forward layout"),
     Key([mod, "shift"], "Tab", lazy.prev_layout(), desc="Toggle last layout"),
     
@@ -49,12 +45,12 @@ keys = [
     # menus
 ##    #Key([mod], "Space", lazy.spawn("mb-jgtools main"), desc="Launch Main Menu"),
     Key([mod], "r", lazy.spawn("rofi -show drun"), desc="Spawn a command using a prompt widget"),
-    Key([mod], "x", lazy.spawn("~/.config/rofi/powermenu/type-2/powermenu.sh"), desc="Power Menu"),
+    Key([mod], "x", lazy.spawn("sh -c ~/.config/rofi/powermenu/powermenu.sh"), desc="Power Menu"),
     Key([mod], "t", lazy.spawn("sh -c ~/.config/rofi/scripts/themes"), desc='theme_switcher'),
 
     # focus, move windows and screens
     Key([alt], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
-##    #Key([alt, "shift"], "Tab", lazy.layout.prev(), desc="Move window focus to other window"),
+    Key([alt, "shift"], "Tab", lazy.layout.previous(), desc="Move window focus to other window"),
     Key([mod], "Down", lazy.layout.down(), desc="Move focus down in current stack pane"),
     Key([mod], "Up", lazy.layout.up(), desc="Move focus up in current stack pane"),
     Key([mod], "Left", lazy.layout.left(), desc="Move focus left in current stack pane"),
@@ -85,10 +81,12 @@ keys = [
     Key([mod, "shift"] , "i", lazy.layout.shrink(), desc="Decrease window size"),
 
     # program launches
-    Key([mod], "f", lazy.spawn("pcmanfm"), desc="Launch File Manager"),
-##    #Key([mod], "w", lazy.spawn("exo-open --launch WebBrowser"), desc="Launch Default Browser"),
-##    #Key([mod], "c", lazy.spawn("code"), desc="Launch VSCode"),
-##    #Key([mod], "v", lazy.spawn("pavucontrol"), desc="Launch Volume Control"),
+    Key([mod], "f", lazy.spawn(fileman), desc="Launch File Manager"),
+    Key([mod], "w", lazy.spawn(browser), desc="Launch Default Browser"),
+    Key([mod], "c", lazy.spawn("code"), desc="Launch VSCode"),
+    Key([mod], "v", lazy.group['Scratchpad'].dropdown_toggle('pavu'), desc="Launch Volume Control"),
+    Key(["control"], "2", lazy.group['Scratchpad'].dropdown_toggle('screenrecorder'), desc="Launch Screen recorder"),
+    Key([mod], "u", lazy.group['Scratchpad'].dropdown_toggle('update'), desc="Update system with yay"),
 ##    #Key([mod], "b", lazy.spawn("blueman-manager"), desc="Launch Bluetooth Manager"),
 ##    #Key([mod], "t", lazy.spawn("xpad"), desc="Launch Xpad Notes"),
 
@@ -109,13 +107,15 @@ keys = [
     Key([], 'XF86MonBrightnessUp', lazy.spawn('brightnessctl set +5%'), desc='Increase brightness'), 
     Key([], 'XF86MonBrightnessDown', lazy.spawn('brightnessctl set 5%-'), desc='Decrease brightness'),
 
-    # misc
-    #Key([mod], "l", lazy.spawn("mbscreenlocker"), desc='Lockscreen',),
 
 
 
 
     
+
+    # misc
+    #Key([mod], "l", lazy.spawn("mbscreenlocker"), desc='Lockscreen',),
+
     Key(
         [mod, "shift"],
         "Return",
@@ -155,7 +155,36 @@ for i in groups:
             )
 
 
-
+groups.append(ScratchPad('Scratchpad', [
+    DropDown(
+        'term', 
+        terminal, 
+        width=0.6, 
+        height= 0.5, 
+        x=0.2, 
+        y=0.25, 
+        opacity=0.7
+    ),
+    DropDown(
+        'pavu', 
+        'pavucontrol', 
+        width=0.6, 
+        height= 0.6, 
+        x=0.2, 
+        y=0.2, 
+        opacity=1
+    ),
+    DropDown(
+        'screenrecorder', 
+        # 'ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 out.mp4',
+        [terminal, '-e', 'ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 out.mp4'],
+        width=0.4, 
+        height= 0.6, 
+        x=0.3, 
+        y=0.1, 
+        opacity=1
+    ),
+]))
 
 # L A Y O U T S
 
@@ -236,16 +265,15 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-				widget.Spacer(length=15,
+                widget.Spacer(length=15,
                     background='#0F1212',
                 ),
 
 
                 widget.Image(
-                    filename='~/.config/qtile/Assets/launch_Icon.png',
-                    margin=2,
+                    filename='~/.config/qtile/Assets/search.png',
                     background='#0F1212',
-                    mouse_callbacks={"Button1":power},
+                    mouse_callbacks={"Button1": search},
                 ),
 
 
@@ -255,7 +283,7 @@ screens = [
 
 
                 widget.GroupBox(
-                    fontsize=24,
+                    fontsize=20,
                     borderwidth=3,
                     highlight_method='block',
                     active='#607767',
@@ -271,12 +299,6 @@ screens = [
                     urgent_border='#202222',
                     rounded=True,
                     disable_drag=True,
-                 ),
-
-
-                widget.Spacer(
-                    length=8,
-                    background='#202222',
                 ),
 
 
@@ -296,29 +318,12 @@ screens = [
                     foreground='#607767',
                     fmt='{}',
                     font="JetBrains Mono Bold",
-                    fontsize=13,
+                    fontsize=12,
                 ),
 
 
                 widget.Image(
-                    filename='~/.config/qtile/Assets/5.png',
-                ),
-
-
-                widget.Image(
-                    filename='~/.config/qtile/Assets/search.png',
-                    margin=2,
-                    background='#0F1212',
-                    mouse_callbacks={"Button1": search},
-                ),
-
-                widget.TextBox(
-                    fmt='Search',
-                    background='#0F1212',
-                    font="JetBrains Mono Bold",
-                    fontsize=13,
-                    foreground='#607767',
-                    mouse_callbacks={"Button1": search},
+                    filename='~/.config/qtile/Assets/7.png',
                 ),
 
 
@@ -331,10 +336,9 @@ screens = [
                     background = '#202222',
                     format = "{name}",
                     font="JetBrains Mono Bold",
-                    fontsize=13,
+                    fontsize=12,
                     foreground='#607767',
                     empty_group_string = 'Desktop',
-
                 ),
 
 
@@ -343,44 +347,17 @@ screens = [
                 ),
 
 
-                widget.Systray(
-                    background='#0F1212',
-                    fontsize=2,
-                ),
-
-
-                widget.TextBox(
-                    text=' ',
-                    background='#0F1212',
-                ),
+                # widget.Systray(
+                # background='#0F1212',
+                # fontsize=2,
+                # ),
 
 
                 widget.Image(
-                    filename='~/.config/qtile/Assets/6.png',
+                    filename='~/.config/qtile/Assets/8.png',
                     background='#202222',
                 ),
 
-
-                # widget.Image(
-                # filename='~/.config/qtile/Assets/Drop1.png',
-                # ),
-
-                # widget.Net(
-                # format=' {up}   {down} ',
-                # background='#202222',
-                # foreground='#E5B9C6',
-                # font="JetBrains Mono Bold",
-                # prefix='k',
-                # ),
-
-                # widget.Image(
-                    # filename='~/.config/qtile/Assets/2.png',
-                # ),
-
-                # widget.Spacer(
-                    # length=8,
-                    # background='#202222',
-                # ),
 
                 widget.Image(
                     filename='~/.config/qtile/Assets/Misc/ram.png',
@@ -392,44 +369,16 @@ screens = [
                     length=-7,
                     background='#202222',
                 ),
+
 
                 widget.Memory(
                     background='#202222',
                     format='{MemUsed: .0f}{mm}',
                     foreground='#607767',
                     font="JetBrains Mono Bold",
-                    fontsize=13,
+                    fontsize=12,
                     update_interval=2,
                 ),
-
-		widget.Image(
-                    filename='~/.config/qtile/Assets/2.png',
-                ),
-
-		widget.Image(
-                    filename='~/.config/qtile/Assets/Misc/ram.png',
-                    background='#202222',
-                ),
-
-                widget.Spacer(
-                    length=-7,
-                    background='#202222',
-                ),
-
-                widget.CPU(
-                    background='#202222',
-                    format='{load_percent}%',
-                    foreground='#607767',
-                    font="JetBrains Mono Bold",
-                    fontsize=13,
-                    update_interval=1,
-                ),
-
-
-                # widget.Image(
-                # filename='~/.config/qtile/Assets/Drop2.png',
-                # ),
-
 
 
                 widget.Image(
@@ -437,9 +386,27 @@ screens = [
                 ),
 
 
-                widget.Spacer(
-                    length=8,
+                widget.TextBox(
+                    text=' ',
                     background='#202222',
+                    foreground='#607767',
+                    font="Material Design Icons",
+                    fontsize=18,
+                ),
+
+
+                widget.CPU(
+                    background='#202222',
+                    format='{load_percent}%',
+                    foreground='#607767',
+                    font="JetBrains Mono Bold",
+                    fontsize=12,
+                    update_interval=2,
+                ),
+
+
+                widget.Image(
+                    filename='~/.config/qtile/Assets/2.png',
                 ),
 
 
@@ -450,9 +417,15 @@ screens = [
                 ),
 
 
+                widget.Spacer(
+                    length=6,
+                    background='#202222',
+                ),
+
+
                 widget.Battery(
                     font="JetBrains Mono Bold",
-                    fontsize=13,
+                    fontsize=12,
                     background='#202222',
                     foreground='#607767',
                     format='{percent:2.0%}',
@@ -464,29 +437,9 @@ screens = [
                 ),
 
 
-                widget.Spacer(
-                    length=8,
-                    background='#202222',
-                ),
-
-
-                # widget.Battery(format=' {percent:2.0%}',
-                    # font="JetBrains Mono ExtraBold",
-                    # fontsize=12,
-                    # padding=10,
-                    # background='#202222',
-                # ),
-
-                # widget.Memory(format='﬙{MemUsed: .0f}{mm}',
-                    # font="JetBrains Mono Bold",
-                    # fontsize=12,
-                    # padding=10,
-                    # background='#4B4D66',
-                # ),
-
                 widget.Volume(
                     font="JetBrains Mono Bold",
-                    fontsize=13,
+                    fontsize=12,
                     theme_path='~/.config/qtile/Assets/Volume/',
                     emoji=True,
                     background='#202222',
@@ -496,12 +449,12 @@ screens = [
                 widget.Spacer(
                     length=-5,
                     background='#202222',
-                    ),
+                ),
 
 
                 widget.Volume(
                     font="JetBrains Mono Bold",
-                    fontsize=13,
+                    fontsize=12,
                     background='#202222',
                     foreground='#607767',
                 ),
@@ -516,8 +469,7 @@ screens = [
                 widget.Image(
                     filename='~/.config/qtile/Assets/Misc/clock.png',
                     background='#0F1212',
-                    margin_y=6,
-                    margin_x=5,
+                    margin=7,
                 ),
 
 
@@ -526,7 +478,7 @@ screens = [
                     background='#0F1212',
                     foreground='#607767',
                     font="JetBrains Mono Bold",
-                    fontsize=13,
+                    fontsize=12,
                 ),
 
 
@@ -534,7 +486,6 @@ screens = [
                     length=18,
                     background='#0F1212',
                 ),
-
 
 
             ],
