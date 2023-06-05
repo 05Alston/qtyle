@@ -29,8 +29,9 @@
     # the top and down respectively.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "300x60-15+46"
-    offset = 60x60
+    # geometry = "300x60-15+46"
+    origin = top-right
+    offset = 12x46
     # Show how many messages are currently hidden (because of geometry).
     indicate_hidden = yes
 
@@ -57,14 +58,14 @@
     padding = 8
 
     # Horizontal padding.
-    horizontal_padding = 12
+    horizontal_padding = 8
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
     frame_width = 3
 
     # Defines color of the frame around the notification window.
-    frame_color = "#282738"
+    frame_color = "#0F1212"
 
     # Define a color for the separator.
     # possible values are:
@@ -91,6 +92,7 @@
     # The spacing between lines.  If the height is smaller than the
     # font height, it will get raised to the font height.
     line_height = 1
+
     # Possible values are:
     # full: Allow a small subset of html markup in notifications:
     #        <b>bold</b>
@@ -274,28 +276,28 @@
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
-    foreground = "#CAA9E0"
-    background = "#282738"
-    frame_color = "#282738"
+    foreground = "#607767"
+    background = "#0F1212"
+    frame_color = "#0F1212"
     timeout = 10
     # Icon for notifications with low urgency, uncomment to enable
-    icon = ~/.config/dunst/images/notification.png
+    icon = ~/.config/dunst/images/bell.svg
 
 [urgency_normal]
-    background = "#282738"
-    foreground = "#CAA9E0"
-    frame_color = "#282738"
+    background = "#0F1212"
+    foreground = "#607767"
+    frame_color = "#0F1212"
     timeout = 10
     # Icon for notifications with normal urgency, uncomment to enable
-    icon = ~/.config/dunst/images/notification.png
+    icon = ~/.config/dunst/images/bell.svg
 
 [urgency_critical]
-    background = "#282738"
-    foreground = "#CAA9E0" #FDF1DB #f5bfd2 #ff8585   #ffdfd3  #fec8d8      #FDF1DB #8fbcbb
-    frame_color = "#282738"
+    background = "#0F1212"
+    foreground = "#607767" #FDF1DB #f5bfd2 #ff8585   #ffdfd3  #fec8d8      #FDF1DB #8fbcbb
+    frame_color = "#0F1212"
     timeout = 10
     # Icon for notifications with critical urgency, uncomment to enable
-    icon = ~/.config/dunst/images/notification.png
+    icon = ~/.config/dunst/images/bell.svg
 
 
 # Every section that isn't one of the above is interpreted as a rules to

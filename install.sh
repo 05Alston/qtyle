@@ -16,21 +16,24 @@ else
   sudo pacman -S git --noconfirm
 fi
 
-# Clone and install Paru
-if command -v paru &>/dev/null; then
-  echo "Paru $(paru -V | cut -d' ' -f2) is already installed in your system"
-else
-  if command -v yay &>/dev/null; then
+# Install packages else Clone and install Yay
+if command -v yay &>/dev/null; then
     echo "Yay $(yay -V | cut -d' ' -f2) is installed in your system"
+
+    # Install packages
+    yay -Syu base-devel qtile python-psutil pywal-git feh picom-jonaburg-fix dunst zsh starship playerctl brightnessctl alacritty pfetch pcmanfm rofi ranger cava pulseaudio alsa-utils neovim networkmanager networkmanager-qt networkmanager-openvpn pavucontrol espanso font-manager bleachbit timeshift acpi btop blueman --noconfirm --needed
+else
+  if command -v paru &>/dev/null; then
+    echo "Paru $(paru -V | cut -d' ' -f2) is already installed in your system"
+
+    # Install packages
+    paru -Syu base-devel qtile python-psutil pywal-git feh picom-jonaburg-fix dunst zsh starship playerctl brightnessctl alacritty pfetch pcmanfm rofi ranger cava pulseaudio alsa-utils neovim networkmanager networkmanager-qt networkmanager-openvpn pavucontrol espanso font-manager bleachbit timeshift acpi btop blueman --noconfirm --needed
   else
     echo "Neither Paru nor Yay is present in your system."
-    echo "Installing Paru..."
-    git clone https://aur.archlinux.org/paru-bin.git && cd paru-bin && makepkg -si --noconfirm && cd ..
+    echo "Installing yay..."
+    pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si && cd ..
   fi
 fi 
-
-# Install packages
-paru -Syu base-devel qtile python-psutil pywal-git feh picom-jonaburg-fix dunst zsh starship playerctl brightnessctl alacritty pfetch thunar rofi ranger cava pulseaudio alsa-utils neovim vim git sddm --noconfirm --needed
 
 # Check and set Zsh as the default shell
 [[ "$(awk -F: -v user="$USER" '$1 == user {print $NF}' /etc/passwd) " =~ "zsh " ]] || chsh -s $(which zsh)
@@ -49,8 +52,8 @@ fi
 # Make Backup 
 
 
-echo "Backing up the current configs. All the backup files will be available at ~/.cozy.bak"
-mkdir -p ~/.cozy.bak
+echo "Backing up the current configs. All the backup files will be available at ~/.qute.bak"
+mkdir -p ~/.qute.bak
 
 for folder in .* *; do
   if [[ -d "$folder" && ! "$folder" =~ ^(\.|\.\.)$ && "$folder" != ".git" ]]; then
