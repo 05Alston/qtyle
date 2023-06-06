@@ -16,24 +16,47 @@ else
   sudo pacman -S git --noconfirm
 fi
 
-# Install packages else Clone and install Yay
+pack_man=''
+# Find installed aur helper
 if command -v yay &>/dev/null; then
     echo "Yay $(yay -V | cut -d' ' -f2) is installed in your system"
-
-    # Install packages
-    yay -Syu base-devel qtile python-psutil lightdm pywal-git feh picom-jonaburg-fix dunst zsh starship playerctl brightnessctl alacritty pfetch pcmanfm rofi ranger cava pulseaudio alsa-utils neovim networkmanager networkmanager-qt networkmanager-openvpn pavucontrol espanso font-manager bleachbit timeshift acpi btop blueman --noconfirm --needed
+    pack_man=yay	
 else
   if command -v paru &>/dev/null; then
     echo "Paru $(paru -V | cut -d' ' -f2) is already installed in your system"
-
-    # Install packages
-    paru -Syu base-devel qtile python-psutil pywal-git feh picom-jonaburg-fix dunst zsh starship playerctl brightnessctl alacritty pfetch pcmanfm rofi ranger cava pulseaudio alsa-utils neovim networkmanager networkmanager-qt networkmanager-openvpn pavucontrol espanso font-manager bleachbit timeshift acpi btop blueman --noconfirm --needed
+    pack_man=paru
   else
-    echo "Neither Paru nor Yay is present in your system."
-    echo "Installing yay..."
-    sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si && cd ..
+    echo "Neither Paru nor Yay is present in your system."    
+
+    PS3='Please enter your choice: '
+    options=("Yay" "Paru" "Quit")
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            "Yay")
+                sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git ~/yay && cd yay && makepkg -si && cd ..
+                pack_man=yay
+		break
+                ;;
+            "Paru")
+                sudo pacman -S --needed base-devel && git clone https://aur.archlinux.org/paru.git ~/paru && cd paru && makepkg -si && cd ..
+		pack_man=paru
+		break
+	        ;;
+            "Quit")
+                exit
+                ;;
+            *) echo "invalid option $REPLY" 
+		exit
+		;;
+        esac
+    done
   fi
 fi 
+
+
+# Install packages
+    $pack_man -Syu base-devel qtile python-psutil pywal-git viewnior picom-jonaburg-fix dunst zsh starship playerctl brightnessctl alacritty pfetch pcmanfm rofi ranger cava pulseaudio alsa-utils neovim networkmanager networkmanager-qt networkmanager-openvpn pavucontrol espanso font-manager bleachbit timeshift acpi btop blueman --noconfirm --needed
 
 # Check and set Zsh as the default shell
 [[ "$(awk -F: -v user="$USER" '$1 == user {print $NF}' /etc/passwd) " =~ "zsh " ]] || chsh -s $(which zsh)
@@ -59,16 +82,18 @@ for folder in .* *; do
   if [[ -d "$folder" && ! "$folder" =~ ^(\.|\.\.)$ && "$folder" != ".git" ]]; then
     if [ -d "$HOME/$folder" ]; then
       echo "Backing up ~/$folder"
-      cp -r "$HOME/$folder" ~/.cozy.bak
+      cp -r "$HOME/$folder" ~/.qute.bak
       echo "Backed up ~/$folder successfully."
       echo "Removing old config for $folder"
       rm -rf "$HOME/$folder"
     fi
-    echo "Copying new config for $folder"
-    cp -r "$folder" "$HOME"
   fi
 done
 
+# Copy dots to location
+mkdir ~/.config && cp -rf .config/* ~/.config
+mkdir ~/.local && cp -rf .local/* ~/.local
+cp .zshrc ~/
 
 
 
