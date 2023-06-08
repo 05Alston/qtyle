@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # Check if script is run as root
 if [[ "$(id -u)" -eq 0 ]]; then
@@ -58,7 +57,7 @@ else
 fi
 
 # Install packages
-$pack_man -Syu base-devel qtile python-psutil pywal-git viewnior feh picom-jonaburg-fix dunst zsh starship alacritty pfetch playerctl brightnessctl rofi ranger cava pulseaudio alsa-utils neovim pavucontrol acpi btop --noconfirm --needed
+$pack_man -Syu base-devel qtile python-psutil pywal-git viewnior feh picom-jonaburg-fix dunst zsh starship alacritty pfetch neovim brightnessctl rofi ranger cava pulseaudio alsa-utils pavucontrol pamixer pulseaudio-alsa pulseaudio-bluetooth playerctl acpi btop noto-fonts noto-fonts-extra --noconfirm --needed
 
 # Check and set Zsh as the default shell
 [[ "$(awk -F: -v user="$USER" '$1 == user {print $NF}' /etc/passwd) " =~ "zsh " ]] || chsh -s $(which zsh)
@@ -75,13 +74,13 @@ fi
 [[ "${plugins[*]} " =~ "zsh-syntax-highlighting " ]] || git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
 # Copy dots to location
-mkdir ~/.config && cp -rf .config/* ~/.config
-mkdir ~/.local && cp -rf .local/* ~/.local
+mkdir ~/.config
+cp -rf .config/* ~/
+mkdir ~/.local
+cp -rf .local/* ~/
 cp .zshrc ~/
 
-
-
-
+wal -i /local/share/background/aurora.
 # Check if lightdm is installed and install if not
 if pacman -Qs lightdm > /dev/null; then
  echo "lightdm is already installed"
@@ -100,6 +99,4 @@ fi
 echo "Enabling and starting lightdm"
 sudo systemctl enable lightdm.service
 sudo systemctl start lightdm.service
-echo "Installation Complete. Rebooting Now"
-sleep 4
-reboot
+
