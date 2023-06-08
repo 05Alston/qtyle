@@ -1,24 +1,4 @@
 
-.config
-	-alacritty		X
-	-cava			X
-	-dunst			X
-	-nvim			X
-	-picom			X
-	-qtile			X
-	-rofi			X
-	-spicetify		X
-	-star.toml		X
-.local
-	-bin			Y
-	-share
-		-backgrounds 	Y
-		-fonts		Y
-Screenshots			X
-README				X
-install script 			X
-
-
 
 <a href='#'><img align="center" src="./Assets/preview.png" alt="Cozytile"></a>
 

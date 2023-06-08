@@ -36,12 +36,12 @@ else
     do
       case $opt in
         "Yay")
-          sudo pacman -S --needed --noconfirm base-devel && rm -fr ~/yay && git clone https://aur.archlinux.org/yay.git ~/yay && cd yay && makepkg -si && cd ..
+          sudo pacman -S --needed --noconfirm base-devel && rm -fr ~/yay && git clone https://aur.archlinux.org/yay.git ~/yay && cd ~/yay && makepkg -si && cd ..
           pack_man=yay
           break
           ;;
         "Paru")
-          sudo pacman -S --needed --noconfirm base-devel && rm -fr ~/paru && git clone https://aur.archlinux.org/paru.git ~/paru && cd paru && makepkg -si && cd ..
+          sudo pacman -S --needed --noconfirm base-devel && rm -fr ~/paru && git clone https://aur.archlinux.org/paru.git ~/paru && cd ~/paru && makepkg -si && cd ..
           pack_man=paru
           break
           ;;
@@ -58,7 +58,7 @@ else
 fi
 
 # Install packages
-$pack_man -Syu base-devel qtile python-psutil pywal-git viewnior feh picom-jonaburg-fix dunst zsh starship alacritty pfetch playerctl brightnessctl rofi ranger cava pulseaudio alsa-utils neovim networkmanager networkmanager-qt networkmanager-openvpn pavucontrol acpi btop blueman --noconfirm --needed
+$pack_man -Syu base-devel qtile python-psutil pywal-git viewnior feh picom-jonaburg-fix dunst zsh starship alacritty pfetch playerctl brightnessctl rofi ranger cava pulseaudio alsa-utils neovim pavucontrol acpi btop --noconfirm --needed
 
 # Check and set Zsh as the default shell
 [[ "$(awk -F: -v user="$USER" '$1 == user {print $NF}' /etc/passwd) " =~ "zsh " ]] || chsh -s $(which zsh)
