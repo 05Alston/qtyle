@@ -57,7 +57,7 @@ else
 fi
 
 # Install packages
-$pack_man -Syu base-devel qtile python-psutil pywal-git viewnior feh picom-jonaburg-fix dunst zsh starship alacritty pfetch neovim brightnessctl rofi ranger cava pulseaudio alsa-utils pavucontrol pamixer pulseaudio-alsa pulseaudio-bluetooth playerctl acpi btop noto-fonts noto-fonts-extra --noconfirm --needed
+$pack_man -Syu base-devel qtile python-psutil pywal-git viewnior feh picom-jonaburg-fix dunst zsh starship alacritty pfetch neovim brightnessctl rofi ranger cava pulseaudio alsa-utils pavucontrol pamixer mpv  pulseaudio-alsa pulseaudio-bluetooth playerctl acpi btop noto-fonts noto-fonts-extra papirus-icon-theme xarchiver unzip networkmanager nm-connection-editor maim flameshot xrandr arandr blueman bluez bluez-utils i3lock-color eww tlp redshift nodejs-lts-hydrogen npm --noconfirm --needed
 
 # Check and set Zsh as the default shell
 [[ "$(awk -F: -v user="$USER" '$1 == user {print $NF}' /etc/passwd) " =~ "zsh " ]] || chsh -s $(which zsh)
@@ -73,14 +73,24 @@ fi
 [[ "${plugins[*]} " =~ "zsh-autosuggestions " ]] || git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 [[ "${plugins[*]} " =~ "zsh-syntax-highlighting " ]] || git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
+
 # Copy dots to location
 mkdir ~/.config
-cp -rf .config/* ~/
+cp -r .config/* ~/
 mkdir ~/.local
-cp -rf .local/* ~/
+cp -r .local/* ~/
 cp .zshrc ~/
 
-wal -i /local/share/background/aurora.
+# Install NvChad
+git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
+
+# Update Wallpaper and generate a theme
+wal -i /local/share/background/aurora.png
+
+# Enable bluetooth and networkmanager
+systemctl enable bluetooth && systemctl start bluetooth
+systemctl enable NetworkkManager && systemctl start NetworkkManager
+
 # Check if lightdm is installed and install if not
 if pacman -Qs lightdm > /dev/null; then
  echo "lightdm is already installed"
@@ -95,7 +105,7 @@ if systemctl list-unit-files | grep enabled | grep -E 'gdm|lightdm|lxdm|lxdm-gtk
  sudo systemctl disable --now $(systemctl list-unit-files | grep enabled | grep -E 'gdm|lightdm|lxdm|lxdm-gtk3|sddm|slim|xdm' | awk -F ' ' '{print $1}')
 fi
 
-# Enable and start SDDM
+# Enable and start lightdm
 echo "Enabling and starting lightdm"
 sudo systemctl enable lightdm.service
 sudo systemctl start lightdm.service

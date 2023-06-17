@@ -13,43 +13,61 @@ from libqtile.lazy import lazy
 from libqtile.log_utils import logger
 import os
 import subprocess
-# stuff
-@hook.subscribe.startup_once
-def autostart():
-    home = os.path.expanduser('~')
-    subprocess.call(f'{home}/.config/qtile/autostart_once.sh')
 
 
 mod = "mod4"
 alt = "mod1"
 terminal = "alacritty"
 browser = "vivaldi-stable --force-dark-mode"
-fileman = "pcmanfm"
+fileman = "thunar"
 txtfont = "JetBrains Mono Bold"
 iconfont = "lucide"
+home = os.path.expanduser("~")
+colors = []
+cache= home + "/.cache/wal/colors"
+
+# functions & stuff
+@hook.subscribe.startup_once
+def autostart():
+    subprocess.call(home + "/.config/qtile/autostart_once.sh")
 
 @lazy.function
-def search():
+def search(qtile):
     qtile.cmd_spawn("rofi -show drun")
 
 @lazy.function
 def power():
-    qtile.cmd_spawn("sh -c ~/.config/rofi/scripts/power")
+    qtile.cmd_spawn(home + "/.local/bin/rofi_powermenu")
 
-def toggle_win(qtile):
-    # logger.warning("suppp")
-    qtile.cmd_next_screen()
-    lazy.layout.next()
-    lazy.window.bring_to_front()
+
+@lazy.function
+def system_menu(qtile):
+    qtile.cmd_spawn("eww close date-clickhandler date")
+    qtile.cmd_spawn("eww open-many --toggle actions-clickhandler actions")
+
+@lazy.function
+def calendar(qtile):
+    qtile.cmd_spawn("eww close actions-clickhandler actions")
+    qtile.cmd_spawn("eww open-many --toggle date-clickhandler date")
+
+
+# def toggle_win(qtile):
+#     # logger.warning("suppp")
+#     qtile.cmd_next_screen()
+#     lazy.layout.next()
+#     lazy.window.bring_to_front()
 
     # qtile.cmd_next_layout()
 
+# def bluetooth():
+#     cmd = "bluetoothctl show | grep 'Powered' | awk '{print $2}'"
+#     etst = subprocess.run(cmd, shell=True, check=True, text=True)
+#     print(f"blue{etst}")
+# bluetooth()
 
-colors = []
-cache='/home/alston/.cache/wal/colors'
+
 def load_colors(cache):
-    print(os.path.isfile(cache))
-    with open(cache, 'r') as file:
+    with open(cache, "r") as file:
         for i in range(8):
             colors.append(file.readline().strip())
     colors.append('#ffffff')
@@ -81,13 +99,12 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
 
     # menus
-##    #Key([mod], "Space", lazy.spawn("mb-jgtools main"), desc="Launch Main Menu"),
+    # Key([mod], "Space", lazy.spawn("mb-jgtools main"), desc="Launch Main Menu"),
     Key([mod], "r", lazy.spawn("rofi -show drun"), desc="Spawn a command using a prompt widget"),
-    Key([mod], "x", lazy.spawn("sh -c ~/.config/rofi/powermenu/powermenu.sh"), desc="Power Menu"),
-    Key([mod], "t", lazy.spawn("sh -c ~/.config/rofi/scripts/themes"), desc='theme_switcher'),
+    Key([mod], "x", lazy.spawn(home + "/.local/bin/rofi_powermenu"), desc="Power Menu"),
 
     # focus, move windows and screens
-    Key([alt], "Tab", lazy.function(toggle_win), desc="Move window focus to other window"),
+    Key([alt], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
     Key([alt, "shift"], "Tab", lazy.layout.previous(), desc="Move window focus to other window"),
     Key([mod], "Down", lazy.layout.down(), desc="Move focus down in current stack pane"),
     Key([mod], "Up", lazy.layout.up(), desc="Move focus up in current stack pane"),
@@ -124,30 +141,34 @@ keys = [
     Key([mod], "c", lazy.spawn("code"), desc="Launch VSCode"),
     Key([mod], "v", lazy.group["Scratchpad"].dropdown_toggle("pavu"), desc="Launch Volume Control"),
     Key(["control"], "2", lazy.group["Scratchpad"].dropdown_toggle("screenrecorder"), desc="Launch Screen recorder"),
-    Key([mod], "u", lazy.group["Scratchpad"].dropdown_toggle("update"), desc="Update system with yay"),
+    # Key([mod], "u", lazy.group["Scratchpad"].dropdown_toggle("update"), desc="Update system with yay"),
     Key([mod], "s", lazy.group["Scratchpad"].dropdown_toggle("xpad"), desc="Open xpad"),
-##    #Key([mod], "b", lazy.spawn("blueman-manager"), desc="Launch Bluetooth Manager"),
-##    #Key([mod], "t", lazy.spawn("xpad"), desc="Launch Xpad Notes"),
-
+    Key([mod], "b", lazy.group["Scratchpad"].dropdown_toggle("bluetooth"), desc="Open bluetooth manager"),
+    
     # screenshots
-    Key([], "Print", lazy.spawn("flameshot gui"), desc="Print Screen"),
-##    #Key([mod], "Print", lazy.spawn("mb-jgtools screenshot"), desc="Print Screen GUI"),
+    Key([], "Print", lazy.spawn(home + "/.local/bin/rofi_screenshot"), desc="Print Screen"),
+    Key([mod], "Print", lazy.spawn("flameshot gui"), desc="Print Screen GUI"),
 
     # audio stuff
-    Key([], "XF86AudioRaiseVolume", lazy.spawn("pamixer -i 3"), desc="Increase volume",),
-    Key([], "XF86AudioLowerVolume", lazy.spawn("pamixer -d 3"), desc="Decrease volume",),
-    Key([], "XF86AudioMute", lazy.spawn("pamixer --toggle-mute"), desc="Toggle volume mute",),
+    # Key([], "XF86AudioRaiseVolume", lazy.spawn("pamixer -i 3"), desc="Increase volume",),
+    # Key([], "XF86AudioLowerVolume", lazy.spawn("pamixer -d 3"), desc="Decrease volume",),
+    # Key([], "XF86AudioMute", lazy.spawn("pamixer --toggle-mute"), desc="Toggle volume mute",),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn(home + "/.local/bin/vol_brightness volume_up"), desc="Increase volume",),
+    Key([], "XF86AudioLowerVolume", lazy.spawn(home + "/.local/bin/vol_brightness volume_down"), desc="Decrease volume",),
+    Key([], "XF86AudioMute", lazy.spawn(home + "/.local/bin/vol_brightness volume_mute"), desc="Toggle volume mute",),
     Key([], "XF86AudioPrev", lazy.spawn("playerctl previous"), desc="Play last audio",),
     Key([], "XF86AudioNext", lazy.spawn("playerctl next"), desc="Play next audio"),
     Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause"), desc="Toggle play/pause audio"),
     Key([], "XF86AudioStop", lazy.spawn("playerctl stop"), desc="Stop audio"),
 
     # brightness
-    Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +5%"), desc="Increase brightness"), 
-    Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 5%-"), desc="Decrease brightness"),
-
+    # Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +5%"), desc="Increase brightness"), 
+    # Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 5%-"), desc="Decrease brightness"),
+    Key([], "XF86MonBrightnessUp", lazy.spawn(home + "/.local/bin/vol_brightness brightness_up"), desc="Increase brightness"), 
+    Key([], "XF86MonBrightnessDown", lazy.spawn(home + "/.local/bin/vol_brightness brightness_down"), desc="Decrease brightness"),
+    Key([mod],"p", lazy.group["Scratchpad"].dropdown_toggle("monitor"), desc="Open arandr"),
     # misc
-    #Key([mod], "l", lazy.spawn("mbscreenlocker"), desc='Lockscreen',),
+    Key([mod], "l", lazy.spawn(home + "/.local/bin/lock"), desc='Lockscreen',),
 
     # Key(
     #     [mod, "shift"],
@@ -167,7 +188,11 @@ keys = [
 
 
 
-groups = [Group(f"{i+1}", label="󰏃") for i in range(8)]
+workspace_names = ["𐰃","𐰩","𐰏","𐰺","𐰀","𐰰","𐰚","𐰋","𐰘","𐰬"]
+
+
+#""
+groups = [Group(f"{i+1}", label=workspace_names[i]) for i in range(9)]
 
 for i in groups:
     keys.extend(
@@ -193,25 +218,25 @@ groups.append(ScratchPad("Scratchpad", [
         "term", 
         terminal, 
         width=0.6, 
-        height= 0.5, 
+        height= 0.6, 
         x=0.2, 
-        y=0.25, 
+        y=0.2, 
         opacity=0.8,
     ),
     DropDown(
-        "pavu", 
-        "pavucontrol", 
-        width=0.6, 
-        height=0.8, 
+        "pavu",
+        "pavucontrol",
+        width=0.6,
+        height=0.8,
         x=0.2,
         y=0.1,
         opacity=1,
     ),
     DropDown(
-        "xpad",
-        [terminal, "-e", "xpad"], 
-        width=0.6, 
-        height=0.8, 
+        "bluetooth",
+        "blueman-manager",
+        width=0.6,
+        height=0.8,
         x=0.2,
         y=0.1,
         opacity=1,
@@ -219,10 +244,19 @@ groups.append(ScratchPad("Scratchpad", [
     DropDown(
         "screenrecorder",
         [terminal, "-e", "ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 out.mp4"],
-        width=0.4, 
-        height= 0.6, 
-        x=0.3, 
-        y=0.1, 
+        width=0.4,
+        height= 0.6,
+        x=0.3,
+        y=0.1,
+        opacity=1,
+    ),
+    DropDown(
+        "monitor",
+        "arandr",
+        width=0.4,
+        height= 0.6,
+        x=0.3,
+        y=0.2,
         opacity=1,
     ),
 ]))
@@ -285,9 +319,8 @@ layouts = [
 ]
 
 
-
 widget_defaults = dict(
-    font="sans",
+    font=txtfont,
     fontsize=12,
     padding=3,
 )
@@ -298,22 +331,21 @@ extension_defaults = [ widget_defaults.copy() ]
 # █▄█ █▀█ █▀▄
 
 
-
 screens = [
 
     Screen(
         top=bar.Bar(
             [
                 widget.Spacer(length=15,
-                    background="#121212",
+                    background="#060606",
                 ),
 
                 widget.TextBox(
                     text='',
-                    background="#121212",
+                    background="#060606",
                     foreground=colors[4],
-                    font="lucide",
-                    fontsize=16,
+                    font=iconfont,
+                    fontsize=12,
                     mouse_callbacks={"Button1": search},
                 ),
 
@@ -323,21 +355,18 @@ screens = [
                 ),
 
                 widget.GroupBox(
-                    fontsize=20,
-                    borderwidth=3,
                     highlight_method="block",
-                    active=colors[4],
-                    block_highlight_text_color="#B2BEBC",
-                    highlight_color="#D0DAF0",
-                    inactive="#121212",
-                    foreground="#4B427E",
-                    background=colors[0],
+                    active=colors[5],
+                    block_highlight_text_color=colors[4],
+                    inactive="#303030",
                     this_current_screen_border=colors[0],
                     this_screen_border=colors[0],
                     other_current_screen_border=colors[0],
                     other_screen_border=colors[0],
+                    background=colors[0],
                     urgent_border=colors[0],
-                    rounded=True,
+                    fontsize=16,
+                    spacing=-3,
                     disable_drag=True,
                 ),
 
@@ -350,15 +379,15 @@ screens = [
                     text="",
                     background=colors[0],
                     foreground=colors[4],
-                    font="lucide",
-                    fontsize=16,
+                    font=iconfont,
+                    fontsize=14,
                 ),
-
+                
                 widget.CurrentLayout(
                     background=colors[0],
                     foreground=colors[4],
                     fmt="{}",
-                    font="JetBrains Mono Bold",
+                    font=txtfont,
                     fontsize=12,
                 ),
 
@@ -367,10 +396,53 @@ screens = [
                     background=colors[0],
                 ),
 
+                # widget.Wlan(
+                #     format="",
+                #     disconnected_message="",
+                #     background=colors[0],
+                #     foreground=colors[4],
+                #     font=iconfont,
+                #     fontsize=16,
+                # ),
+
+                # widget.Wlan(
+                #     format="",
+                #     disconnected_message="",
+                #     background=colors[0],
+                #     foreground=colors[4],
+                #     font="Material Design Icons",
+                #     fontsize=16,
+                # ),
+
+                # widget.Wlan(
+                #     wifi_interface="wlp4s0",
+                #     show_eth = True,
+                #     separator = " ; ",
+                #     eth_disc_msg = "Disc",
+                #     eth_cable_con_msg = "Conn",
+                #     format_wifi = "{essid} {percent:2.0%}",
+                #     eth_interface="enp3s0",
+                # ),
+
+                # widget.Image(
+                #     filename="~/.config/qtile/Assets/1-transparent.png",
+                #     background=colors[0],
+                # ),
+
+                # widget.Systray(
+                #     foreground=colors[4],
+                #     background=colors[0],
+                # ),
+
+                # widget.Image(
+                #     filename="~/.config/qtile/Assets/1-transparent.png",
+                #     background=colors[0],
+                # ),
+
                 widget.WindowName(
                     background = colors[0],
                     format = "{name}",
-                    font="JetBrains Mono Bold",
+                    font=txtfont,
                     fontsize=12,
                     foreground=colors[4],
                     empty_group_string = "Desktop",
@@ -382,18 +454,23 @@ screens = [
                 ),
 
                 widget.TextBox(
-                    text="",
+                    text="",
                     background=colors[0],
                     foreground=colors[4],
-                    font="lucide",
-                    fontsize=16,
+                    font="feather-font-addon",
+                    fontsize=18,
+                ),
+
+                widget.Spacer(
+                    length=-3,
+                    background=colors[0],
                 ),
 
                 widget.Memory(
                     background=colors[0],
                     format="{MemUsed: .0f}{mm}",
                     foreground=colors[4],
-                    font="JetBrains Mono Bold",
+                    font=txtfont,
                     fontsize=12,
                     update_interval=2,
                 ),
@@ -404,10 +481,10 @@ screens = [
                 ),
 
                 widget.TextBox(
-                    text="",
+                    text="",
                     background=colors[0],
                     foreground=colors[4],
-                    font="lucide",
+                    font=iconfont,
                     fontsize=16,
                 ),
 
@@ -415,7 +492,7 @@ screens = [
                     background=colors[0],
                     format="{load_percent}%",
                     foreground=colors[4],
-                    font="JetBrains Mono Bold",
+                    font=txtfont,
                     fontsize=12,
                     update_interval=2,
                 ),
@@ -429,7 +506,7 @@ screens = [
                     text="",
                     background=colors[0],
                     foreground=colors[4],
-                    font="lucide",
+                    font=iconfont,
                     fontsize=16,
                 ),
 
@@ -438,7 +515,7 @@ screens = [
                     format='{temp:.0f}{unit}',
                     threshold=80,
                     foreground=colors[4],
-                    font="JetBrains Mono Bold",
+                    font=txtfont,
                     fontsize=12,
                     update_interval=2,
                 ),
@@ -455,11 +532,11 @@ screens = [
                 ),
 
                 widget.Battery(
-                    font="JetBrains Mono Bold",
-                    fontsize=12,
+                    format='{percent:2.0%}',
                     background=colors[0],
                     foreground=colors[4],
-                    format='{percent:2.0%}',
+                    font=txtfont,
+                    fontsize=12,
                 ),
 
                 widget.Image(
@@ -468,10 +545,9 @@ screens = [
                 ),
 
                 widget.Volume(
-                    font="JetBrains Mono Bold",
+                    font=txtfont,
                     fontsize=12,
                     theme_path="~/.config/qtile/Assets/Volume/",
-                    emoji=True,
                     background=colors[0],
                 ),
 
@@ -481,7 +557,7 @@ screens = [
                 ),
 
                 widget.Volume(
-                    font="JetBrains Mono Bold",
+                    font=txtfont,
                     fontsize=12,
                     background=colors[0],
                     foreground=colors[4],
@@ -492,22 +568,55 @@ screens = [
                     background=colors[0],
                 ),
 
-                widget.TextBox(
-                    text="",
+                widget.CheckUpdates(
                     background=colors[0],
+                    display_format='',
+                    no_update_string='',
+                    initial_text='',
+                    distro='Arch_paru',
                     foreground=colors[4],
-                    font="lucide",
+                    colour_have_updates=colors[4],
+                    colour_no_updates=colors[4],
+                    font=iconfont,
                     fontsize=16,
+                    update_interval=3600,
                 ),
 
-                widget.ThermalSensor(
+                widget.CheckUpdates(
                     background=colors[0],
-                    format='{temp:.0f}{unit}',
-                    threshold=80,
+                    display_format='{updates}',
+                    no_update_string='',
+                    initial_text='',
+                    distro='Arch_paru',
                     foreground=colors[4],
-                    font="JetBrains Mono Bold",
+                    colour_have_updates=colors[4],
+                    colour_no_updates=colors[4],
+                    font=txtfont,
                     fontsize=12,
-                    update_interval=2,
+                    update_interval=3600,
+                ),
+
+                widget.Image(
+                    filename="~/.config/qtile/Assets/2-transparent.png",
+                    background=colors[0],
+                ),
+
+                widget.TextBox(
+                    text="",
+                    background=colors[0],
+                    foreground=colors[4],
+                    font=iconfont,
+                    fontsize=16,
+                    mouse_callbacks={"Button1": calendar},
+                ),
+
+                widget.Clock(
+                    format="%d %b, %I:%M",
+                    background=colors[0],
+                    foreground=colors[4],
+                    font=txtfont,
+                    fontsize=12,
+                    mouse_callbacks={"Button1": calendar},
                 ),
 
                 widget.Image(
@@ -516,24 +625,17 @@ screens = [
                 ),
 
                 widget.TextBox(
-                    text="",
-                    background="#121212",
+                    text="",
+                    background="#060606",
                     foreground=colors[4],
-                    font="lucide",
+                    font=iconfont,
                     fontsize=16,
-                ),
-
-                widget.Clock(
-                    format="%I:%M %p",
-                    background="#121212",
-                    foreground=colors[4],
-                    font="JetBrains Mono Bold",
-                    fontsize=12,
+                    mouse_callbacks={"Button1": system_menu},
                 ),
 
                 widget.Spacer(
                     length=18,
-                    background="#121212",
+                    background="#060606",
                 ),
             ],
             30,

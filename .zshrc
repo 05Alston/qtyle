@@ -141,8 +141,12 @@ alias gp='git push origin master'
 alias emacs="emacsclient -c -a 'emacs'"
 
 #custom stuff
+nitch
+
 cat ~/.cache/wal/sequences
 
 eval "$(starship init zsh)"
 
 export PATH="$HOME/.local/bin:$PATH"
+
+[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
