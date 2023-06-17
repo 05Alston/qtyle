@@ -139,24 +139,31 @@ sudo systemctl enable lightdm && sudo systemctl start lightdm
 | fetch|
 |--|
 |![default](./images/fetch.png)|
+
 | color changer|
 |--|
 |![default](./images/wall.gif)|
+
 | action center|
 |--|
 |![default](./images/actions-center.png)|
-| app launcher|
-|--|
-|![default](./images/app-launcher.png)|
+
 | calendar|
 |--|
 |![default](./images/calendar.png)|
+
+| app launcher|
+|--|
+|![default](./images/app-launcher.png)|
+
 | powermenu|
 |--|
 |![default](./images/powermenu.png)|
+
 | print menu|
 |--|
 |![default](./images/print-menu.png)|
+
 </details>
 
 <details>
