@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # Check if script is run as root
 if [[ "$(id -u)" -eq 0 ]]; then
   echo "This script must not be run as root"
@@ -57,8 +57,8 @@ else
 fi
 
 # Install packages
-$pack_man -Syu base-devel qtile python-psutil pywal-git viewnior feh picom-jonaburg-fix dunst zsh starship alacritty pfetch neovim brightnessctl rofi ranger cava pulseaudio alsa-utils pavucontrol pamixer mpv  pulseaudio-alsa pulseaudio-bluetooth playerctl acpi btop noto-fonts noto-fonts-extra papirus-icon-theme xarchiver unzip networkmanager nm-connection-editor maim flameshot xrandr arandr blueman bluez bluez-utils i3lock-color eww tlp redshift nodejs-lts-hydrogen npm --noconfirm --needed
-
+$pack_man -Syu base-devel qtile python-psutil pywal-git viewnior feh picom-jonaburg-fix dunst zsh starship alacritty nitch neovim brightnessctl rofi ranger cava pulseaudio alsa-utils pavucontrol pamixer mpv pulseaudio-alsa pulseaudio-bluetooth playerctl acpi btop noto-fonts noto-fonts-extra papirus-icon-theme xarchiver unzip networkmanager nm-connection-editor maim flameshot arandr blueman bluez bluez-utils i3lock-color tlp redshift nodejs-lts-hydrogen npm --noconfirm --needed
+# xrandr eww
 # Check and set Zsh as the default shell
 [[ "$(awk -F: -v user="$USER" '$1 == user {print $NF}' /etc/passwd) " =~ "zsh " ]] || chsh -s $(which zsh)
 
@@ -75,10 +75,16 @@ fi
 
 
 # Copy dots to location
-mkdir ~/.config
-cp -r .config/* ~/
-mkdir ~/.local
-cp -r .local/* ~/
+if [ ! -d "~/.config" ]; then
+  mkdir ~/.config
+fi
+cp -r .config ~/.config
+
+if [ ! -d "~/.local" ]; then
+  mkdir ~/.local
+fi
+cp -r .local ~/.local
+
 cp .zshrc ~/
 
 # Install NvChad
