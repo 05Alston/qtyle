@@ -1,2 +1,0 @@
-# dotfiles
-dots for qtile
