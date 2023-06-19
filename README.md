@@ -1,6 +1,37 @@
 
 # Hey there!! This is my first Qtile rice
 
+## Screenshots
+
+| fetch|
+|--|
+|![default](./images/fetch.png)|
+
+| color changer|
+|--|
+|![default](./images/wall.gif)|
+
+| action center|
+|--|
+|![default](./images/actions-center.png)|
+
+| calendar|
+|--|
+|![default](./images/calendar.png)|
+
+| app launcher|
+|--|
+|![default](./images/app-launcher.png)|
+
+| powermenu|
+|--|
+|![default](./images/powermenu.png)|
+
+| print menu|
+|--|
+|![default](./images/print-menu.png)|
+
+
 ## INSTALLATION  (Arch Linux)
 
 #### Note: This installation script is specifically designed for Arch Linux. It will work for a freshly installed system. If you've been using a different window manager, no worries - just be sure to take a complete backup of your current dots before running the script. And if you're already using Oh My Zsh, don't forget to remove that folder from your home directory
@@ -130,39 +161,6 @@ sudo systemctl enable lightdm && sudo systemctl start lightdm
 #### Congratulations! You have successfully replicated my setup! Feel free to experiment with the configurations and enjoy!!!
 
 </details>
-
-</details>
-
-<details>
-<summary><h2>Screenshots</h2></summary>
-
-| fetch|
-|--|
-|![default](./images/fetch.png)|
-
-| color changer|
-|--|
-|![default](./images/wall.gif)|
-
-| action center|
-|--|
-|![default](./images/actions-center.png)|
-
-| calendar|
-|--|
-|![default](./images/calendar.png)|
-
-| app launcher|
-|--|
-|![default](./images/app-launcher.png)|
-
-| powermenu|
-|--|
-|![default](./images/powermenu.png)|
-
-| print menu|
-|--|
-|![default](./images/print-menu.png)|
 
 </details>
 
